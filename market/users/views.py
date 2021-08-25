@@ -11,12 +11,10 @@ users = Blueprint('users', __name__)
 @users.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-
     if form.validate_on_submit():
-        user = User(email=form.email.data,
-                    username=form.username.data,
+        user = User(username=form.username.data,
+                    email=form.email.data,
                     password=form.password.data)
-
         db.session.add(user)
         db.session.commit()
         flash('Thanks for registering! Now you can login!')
@@ -27,16 +25,15 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        attempted_user = User.query.filter_by(username=form.username.data).first()
-        if attempted_user and attempted_user.check_password_correction(
-                attempted_password=form.password.data
-        ):
-            login_user(attempted_user)
-            flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
-            return redirect(url_for('items.market_page'))
-        else:
-            flash('Username and password are not match! Please try again', category='danger')
 
+        user = User.query.filter_by(username=form.username.data).first()
+        if user.check_password(form.password.data) and user is not None:
+            login_user(user)
+            flash('Logged in successfully.')
+            next = request.args.get('next')
+            if next == None or not next[0]=='/':
+                next = url_for('items.market_page')
+            return redirect(next)
     return render_template('login.html', form=form)
 
 

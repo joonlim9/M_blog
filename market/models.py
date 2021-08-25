@@ -1,5 +1,4 @@
 from market import db,login_manager
-from datetime import datetime
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 
@@ -9,27 +8,36 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 class User(db.Model, UserMixin):
+
+    # Create a table in the db
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer(), primary_key=True)
-    username = db.Column(db.String(64), nullable=False, unique=True)
-    email = db.Column(db.String(64), nullable=False, unique=True)
-    password_hash = db.Column(db.String(128), nullable=False)
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    email = db.Column(db.String(64), unique=True, index=True)
+    password = db.Column(db.String(128))
     budget = db.Column(db.Integer(), nullable=False, default=1000)
     items = db.relationship('Item', backref='owned_user', lazy=True)
 
-    def __init__(self, username, email, password):        
-        self.username = username
+
+    def __init__(self, email, username, password):
         self.email = email
-        self.password_hash = generate_password_hash(password)
+        self.username = username
+        self.password = generate_password_hash(password)
 
     def check_password(self,password):
-        return check_password_hash(self.password_hash,password)
+        return check_password_hash(self.password,password)
 
-    def purchase(self, item_obj):
+    def prettier_budget(self):
+        if len(str(self.budget)) >= 4:
+            return f'{str(self.budget)[:-3]},{str(self.budget)[-3:]}$'
+        else:
+            return f"{self.budget}$"
+
+    def can_purchase(self, item_obj):
         return self.budget >= item_obj.price
 
-    def sell(self, item_obj):
+    def can_sell(self, item_obj):
         return item_obj in self.items
 
     def __repr__(self):
@@ -43,7 +51,7 @@ class Item(db.Model):
     price = db.Column(db.Integer(), nullable=False)
     barcode = db.Column(db.String(length=12), nullable=False, unique=True)
     description = db.Column(db.String(length=1024), nullable=False, unique=True)
-    owner = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    owner = db.Column(db.Integer(), db.ForeignKey('users.id'))
 
     def __init__(self, name, price, barcode, description, owner):
         self.name = name
@@ -64,3 +72,16 @@ class Item(db.Model):
         self.owner = None
         user.budget += self.price
         db.session.commit()
+
+def init_db():
+    db.create_all()
+
+    # Create a test user
+    new_user = User('jk', 'dd@gmail.com', 'aaaaaaaa')
+    db.session.add(new_user)
+    db.session.commit()
+
+
+
+if __name__ == '__main__':
+    init_db()
