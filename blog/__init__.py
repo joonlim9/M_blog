@@ -17,8 +17,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "users.login"
 
-from market.core.views import core
-from market.users.views import users      
+from blog.core.views import core
+from blog.users.views import users      
 
 app.register_blueprint(core)
 app.register_blueprint(users)

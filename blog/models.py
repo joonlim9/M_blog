@@ -1,4 +1,4 @@
-from market import db,login_manager
+from blog import db,login_manager
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
 from sqlalchemy.orm import backref

@@ -1,9 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from market import db
+from blog import db
 from werkzeug.security import generate_password_hash,check_password_hash
-from market.models import User
-from market.users.forms import RegisterForm, LoginForm
+from blog.models import User
+from blog.users.forms import RegisterForm, LoginForm
 
 
 users = Blueprint('users', __name__)
