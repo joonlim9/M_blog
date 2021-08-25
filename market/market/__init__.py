@@ -20,8 +20,6 @@ login_manager.login_view = "users.login"
 from market.core.views import core
 from market.items.views import items
 from market.users.views import users      
-# from market import routes
-
 
 app.register_blueprint(core)
 app.register_blueprint(items)

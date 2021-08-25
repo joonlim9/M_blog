@@ -3,6 +3,6 @@ from market.models import Item
 
 core = Blueprint('core',__name__)
 
-@core.route('/info')
+@core.route('/')
 def info():
     return render_template('info.html')

@@ -16,10 +16,10 @@
   </li>
     {% if current_user.is_authenticated %}
     <li class="nav-link"><a href="{{ url_for('users.logout') }}">Log Out</a></li>
-    <li class="nav-link"><a href="{{ url_for('items.market_page') }}">Market</a></li>
     {% else %}
     <li class="nav-link"><a href="{{ url_for('users.login') }}">Log In</a></li>
     <li class="nav-link"><a href="{{ url_for('users.register') }}">Register</a></li>
+    <li class="nav-link"><a href="{{ url_for('items.market_page') }}">Market</a></li>
     {% endif %}
 
 </ul>
