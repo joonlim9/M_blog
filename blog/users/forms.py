@@ -6,7 +6,7 @@ from flask_wtf.file import FileField, FileAllowed
 
 # User Based Imports
 from flask_login import current_user
-from market.models import User
+from blog.models import User
 
 
 class LoginForm(FlaskForm):

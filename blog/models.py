@@ -1,6 +1,7 @@
 from blog import db,login_manager
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
+from datetime import datetime
 from sqlalchemy.orm import backref
 
 
@@ -26,3 +27,22 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"UserName: {self.username}"
+
+class BlogPost(db.Model):
+
+    users = db.relationship(User)
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    title = db.Column(db.String(140), nullable=False)
+    text = db.Column(db.Text, nullable=False)
+
+    def __init__(self, title, text, user_id):
+        self.title = title
+        self.text = text
+        self.user_id =user_id
+
+
+    def __repr__(self):
+        return f"Post Id: {self.id} --- Date: {self.date} --- Title: {self.title}"

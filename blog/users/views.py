@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from blog import db
 from werkzeug.security import generate_password_hash,check_password_hash
-from blog.models import User
+from blog.models import User, BlogPost
 from blog.users.forms import RegisterForm, LoginForm
 
 
@@ -40,3 +40,10 @@ def logout():
     logout_user()
     flash("You have been logged out!", category='info')
     return redirect(url_for('core.info'))
+
+@users.route("/<username>")
+def user_posts(username):
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first_or_404()
+    blog_posts = BlogPost.query.filter_by(author=user).order_by(BlogPost.date.desc()).paginate(page=page, per_page=5)
+    return render_template('user_blog_posts.html', blog_posts=blog_posts, user=user)
