@@ -29,7 +29,6 @@ class User(db.Model, UserMixin):
         return f"UserName: {self.username}"
 
 class BlogPost(db.Model):
-
     users = db.relationship(User)
 
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +41,6 @@ class BlogPost(db.Model):
         self.title = title
         self.text = text
         self.user_id =user_id
-
 
     def __repr__(self):
         return f"Post Id: {self.id} --- Date: {self.date} --- Title: {self.title}"

@@ -18,7 +18,9 @@ login_manager.init_app(app)
 login_manager.login_view = "users.login"
 
 from blog.core.views import core
-from blog.users.views import users      
+from blog.users.views import users
+from blog.blog_posts import blog_posts 
 
 app.register_blueprint(core)
 app.register_blueprint(users)
+app.register_blueprint(blog_posts)
