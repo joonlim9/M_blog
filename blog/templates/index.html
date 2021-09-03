@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="jumbotron">
+        <h1>Blog Posts</h1>
+    </div>
+
+    <div class="container">
+        {% for post in blog_posts.items %}
+            <div class="card">
+
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
