@@ -15,21 +15,38 @@
         <ul class="navbar-nav">
           {% if current_user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('users.logout') }}">Log Out</a>
+            <a class="nav-link text-nowrap" href="{{ url_for('core.index') }}">Blog Posts</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('blog_posts.create_post') }}">Create Post</a>
+            <a class="nav-link text-nowrap" href="{{ url_for('users.user_posts', username=current_user.username) }}">My Posts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-nowrap" href="{{ url_for('blog_posts.create_post') }}">Create Post</a>
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('users.login') }}">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('users.register') }}">Register</a>
-          </li>          
+            <a class="nav-link text-nowrap" href="{{ url_for('core.index') }}">Blog Posts</a>
+          </li>    
           {% endif %}
         </ul>
       </div>
+
+      <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+          {% if not current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('users.login') }}">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('users.register') }}">Register</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('users.logout') }}">Log Out</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>  
     </nav>
 <div class="container">
   {% block content %}

@@ -1,6 +1,7 @@
 import sys
 from flask import render_template,url_for,flash, redirect,request,Blueprint,abort
 from flask_login import current_user,login_required
+from flask_migrate import current
 from blog import db
 from blog.models import BlogPost
 from blog.blog_posts.forms import BlogPostForm
@@ -16,7 +17,7 @@ def create_post():
 
         blog_post = BlogPost(title=form.title.data,
                              text=form.text.data,
-                             user_id=current_user.id
+                             user_name=current_user.username
                              )
         db.session.add(blog_post)
         db.session.commit()
@@ -27,7 +28,7 @@ def create_post():
 
 
 # Blog Post (View)
-@blog_posts.route('/<int: blog_post_id>')
+@blog_posts.route('/<int:blog_post_id>')
 def blog_post(blog_post_id):
     blog_post = BlogPost.query.get_or_404(blog_post_id)
     return render_template('blog_post.html', title=blog_post.title,
@@ -35,12 +36,12 @@ def blog_post(blog_post_id):
 
 
 # Update
-@blog_posts.route('/<int: blog_post_id>/update', methods=['GET', 'POST'])
+@blog_posts.route('/<int:blog_post_id>/update', methods=['GET', 'POST'])
 @login_required
 def update(blog_post_id):
     blog_post = BlogPost.query.get_or_404(blog_post_id)
 
-    if blog_post.authoer != current_user:
+    if blog_post.user_name != current_user.username:
         abort(403)
     
     form = BlogPostForm()
@@ -50,21 +51,21 @@ def update(blog_post_id):
         blog_post.text = form.text.data
         db.session.commit()
         flash("Blog Post Updated")
-        return redirect(url_for('blog_posts.blog_post'), blog_post_id=blog_post.id)
+        return redirect(url_for('core.index'))
     elif request.method == 'GET':
         form.title.data = blog_post.title
         form.text.data = blog_post.text
 
-    return render_template('creat_post.html', title='Update', form=form)
+    return render_template('create_post.html', title='Update', form=form)
 
 
 # Delete
-@blog_posts.route('/<int: blog_post_id>/delete', methods=['GET', 'POST'])
+@blog_posts.route('/<int:blog_post_id>/delete', methods=['GET', 'POST'])
 @login_required
 def delete_post(blog_post_id):
     blog_post = BlogPost.query.get_or_404(blog_post_id)
 
-    if blog_post.authoer != current_user:
+    if blog_post.user_name != current_user.username:
         abort(403)
 
     db.session.delete(blog_post)
